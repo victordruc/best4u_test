@@ -1,11 +1,10 @@
 import styles from "./style.module.css";
 import ProductContext from "../../context/ProductContext";
 import ProductCardCarousel from "./ProductCardCarousel";
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import Button from "../Button/Button";
 
-const ProductCarousel = ({ context }) => {
-  const value = useContext(context);
+const ProductCarousel = ({ products }) => {
   const carouselElement = useRef(null);
 
   const handleClick = (right) => {
@@ -27,6 +26,7 @@ const ProductCarousel = ({ context }) => {
     carouselElement.current.scrollTo(widthToScroll,0)
   }
 
+  // carousel move for pc
   const handleMove = (e) => {
     const scrollLeft = carouselElement.current.scrollLeft
     e.target.addEventListener("pointermove",pointerMove)
@@ -41,6 +41,28 @@ const ProductCarousel = ({ context }) => {
     }
     function pointerLeave() {
       e.target.removeEventListener("pointermove",pointerMove)
+      e.target.removeEventListener("pointerleave",pointerLeave)
+      e.target.removeEventListener("pointerup",pointerLeave)
+    }
+  }
+
+  // carousel move for mobile
+  const handleTouch = (e) => {
+    const scrollLeft = carouselElement.current.scrollLeft
+    e.target.addEventListener("touchmove",touchMove)
+    e.target.addEventListener("touchcancel",touchLeave)
+    e.target.addEventListener("touchend",touchLeave)
+
+    const shiftX = e.touches[0].clientX
+
+    function touchMove(e) {
+      const shiftXAfter = e.touches[0].clientX-shiftX
+      carouselElement.current.scrollTo(scrollLeft-shiftXAfter,0)
+    }
+    function touchLeave() {
+      e.target.removeEventListener("touchmove",touchMove)
+      e.target.removeEventListener("touchcancel",touchLeave)
+      e.target.removeEventListener("touchend",touchLeave)
     }
   }
 
@@ -55,20 +77,19 @@ const ProductCarousel = ({ context }) => {
             width="16"
             height="16"
             fill="currentColor"
-            class="bi bi-arrow-left"
             viewBox="0 0 16 16"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
             />
           </svg>
         }
         type="round"
       />
-      <div ref={carouselElement} onPointerDown={handleMove} onDragStart={e=>e.preventDefault()} className={styles.carousel}>
-        {value.map(({ type, img, id }) => (
-          <ProductCardCarousel key={id} type={type} img={img.src} />
+      <div ref={carouselElement} onTouchStart={handleTouch} onPointerDown={handleMove} onDragStart={e=>e.preventDefault()} className={styles.carousel}>
+        {products.map(({ productType, image, id }) => (
+          <ProductCardCarousel key={id} type={productType} img={image} />
         ))}
       </div>
       <Button
@@ -80,11 +101,10 @@ const ProductCarousel = ({ context }) => {
             width="16"
             height="16"
             fill="currentColor"
-            class="bi bi-arrow-right"
             viewBox="0 0 16 16"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"
             />
           </svg>

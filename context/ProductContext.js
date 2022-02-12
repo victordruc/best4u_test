@@ -1,35 +1,51 @@
-import React from 'react'
-import img from '../img/upload/img.png'
-import img1 from '../img/upload/img.png'
-import img2 from '../img/upload/img.png'
+import React from "react";
+import gql from "graphql-tag";
+import { Query } from "react-apollo";
 
-const ProductData = React.createContext('');
-
-const ProductContext = (Component) => {
-    const data = [
-        {
-            id: "454",
-            type: "Men",
-            img: img
-        },
-        {
-            id: "456",
-            type: "Men",
-            img: img1
-        },
-        {
-            id: "444",
-            type: "Men",
-            img: img2
-        },
-    ]
-    return () =>{
-        return (
-            <ProductData.Provider value={data}>
-                <Component context= {ProductData}/>
-            </ProductData.Provider>
-        )
+const GET_PRODUCTS = gql`
+  query {
+    products(first: 10) {
+      edges {
+        node {
+          id
+          title
+          productType
+          images(first: 1) {
+            edges {
+              node {
+                originalSrc
+              }
+            }
+          }
+        }
+      }
     }
-}
+  }
+`;
 
-export default ProductContext
+const ProductContext = (Component) => () => {
+  return (
+    <Query query={GET_PRODUCTS}>
+      {({ data, loading, error }) => {
+        if (loading) {
+          return <div>Loading…</div>;
+        }
+        if (error) {
+          return <div>{error.message}</div>;
+        }
+        const {
+          products: { edges },
+        } = data;
+        const products = edges.map(({ node: { id, productType, images } }) => ({
+          id,
+          productType,
+          image: images.edges[0].node.originalSrc,
+        }));
+        
+        return <Component products={products} />;
+      }}
+    </Query>
+  );
+};
+
+export default ProductContext;

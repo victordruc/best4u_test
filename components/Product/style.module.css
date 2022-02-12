@@ -47,6 +47,7 @@
    white-space: nowrap;
    overflow: hidden;
    position: relative;
+   user-select: none;
 }
 
 .roundBtnLeft {

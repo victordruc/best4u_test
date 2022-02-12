@@ -1,0 +1,19 @@
+.heroText {
+   font-weight: 700;
+   font-size: 9.375rem;
+   color: white;
+   text-transform: uppercase;
+   line-height: 8.125rem;
+   width: 760px;
+   text-align: center;
+   margin-top: 230px;
+}
+
+@media (max-width:800px) {
+   .heroText {
+      font-size: 4rem;
+      line-height: 4rem;
+      width: 310px;
+      margin-top: 130px;
+   }
+}

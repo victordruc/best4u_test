@@ -1,19 +1,19 @@
 import styles from "./style.module.css";
 
 const Button = (props) => {
-  const { component, type } = props;
+  const { component, className, type, ...rest } = props;
 
-  let className = props.className || "";
+  let newClassName = className || "";
   switch (type) {
     case "primary":
-      className += " " + styles.primary;
+      newClassName += " " + styles.primary;
       break;
     case "round":
-      className += " " + styles.round;
+      newClassName += " " + styles.round;
       break;
   }
 
-  return <button className={className}>{component}</button>;
+  return <button className={newClassName} {...rest}>{component}</button>;
 };
 
 export default Button;

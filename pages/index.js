@@ -1,6 +1,7 @@
 import Header from "../components/Header/Header";
 import ProductCarousel from "../components/Product/ProductCarousel";
 
+
 const Index = () => (
     <>
       <Header/>
